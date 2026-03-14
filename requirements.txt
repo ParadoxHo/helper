@@ -6,5 +6,5 @@ pydantic==2.4.2
 chromadb==0.4.22
 PyPDF2==3.0.1
 python-multipart==0.0.6
+fastembed==0.5.1          # вместо sentence-transformers
 numpy<2.0.0
-sentence-transformers==2.2.2
