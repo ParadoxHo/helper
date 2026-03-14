@@ -1,20 +1,18 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import httpx
 import os
 import re
 from typing import Optional
 
-app = FastAPI(title="Wsparcie Techniczne")
+app = FastAPI(title="Wsparcie Techniczne AZS")
 
+# Разрешаем CORS для твоего фронтенда
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://assistics.netlify.app/",  # или твой будущий сайт поддержки
-        "http://localhost:8000"
-    ],
+    allow_origins=["https://assistics.netlify.app", "http://localhost:8000"],  # без слеша в конце!
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -46,7 +44,6 @@ async def chat(request: ChatRequest):
     try:
         print(f"📤 Zapytanie: {request.message[:50]}...")
 
-        # === NOWY SYSTEM PROMPT DLA UŻYTKOWNIKÓW ===
         system_prompt = """
 Jesteś inżynierem wsparcia technicznego pierwszej linii dla systemów bezpieczeństwa na stacjach benzynowych.
 Twoi rozmówcy to pracownicy stacji (operatorzy), którzy nie są specjalistami. Mówią po polsku.
@@ -54,37 +51,25 @@ Twoi rozmówcy to pracownicy stacji (operatorzy), którzy nie są specjalistami.
 ZNASZ NASTĘPUJĄCE SYSTEMY (POZIOM UŻYTKOWNIKA):
 - Monitoring: Bosch DIVAR, Bosch DIP, 3xLogic, Provision, Hikvision
 - Alarmy: Paradox EVO192, SP65, SP4000, Satel Integra
-- Kontrola dostępu: Rosslare B32
+- Kontrola dostępu: Rosslare B32 (zmiana kodu użytkownika)
 
 ZADANIA UŻYTKOWNIKA:
 - zmiana kodu użytkownika w Paradox, Satel, Rosslare
-- zmiana kodu otwierania drzwi w Rosslare
-- raportowanie awarii: kamera nie działa, brak obrazu, szlaban się nie otwiera, czujka fałszywie alarmuje
+- raportowanie awarii: kamera nie działa, brak obrazu, czujka fałszywie alarmuje, czytnik nie reaguje
 
 ZASADY:
 1. Odpowiadaj TYLKO po polsku, krótko i rzeczowo.
-2. Nie podawaj instrukcji programowania ani zaawansowanej konfiguracji – jeśli użytkownik o to pyta, powiedz, że to może zrobić tylko serwisant.
+2. Nie podawaj instrukcji programowania – jeśli użytkownik o to pyta, powiedz, że to może zrobić tylko serwisant.
 3. Dla typowych problemów sugeruj proste czynności:
-   - sprawdź zasilanie (czy kabel nie jest odłączony, czy nie wywaliło korków)
-   - sprawdź połączenia sieciowe (kabel Ethernet, diody na kamerze)
+   - sprawdź zasilanie (kable, korki)
+   - sprawdź połączenia sieciowe (diody na kamerze)
    - zresetuj urządzenie (odłącz zasilanie na 10 sekund)
    - sprawdź czystość czujek (pajęczyny, kurz)
    - wymień baterię w czujce bezprzewodowej
-4. Jeśli problem jest poważny (brak reakcji na reset, uszkodzenie mechaniczne), zasugeruj wezwanie serwisu.
-5. Bądź uprzejmy i cierpliwy. Używaj prostego języka.
-
-PRZYKŁADY:
-- Pytanie: "Szlaban się nie otwiera po przyłożeniu karty"
-  → Odpowiedź: "Proszę sprawdzić, czy dioda na czytniku świeci. Jeśli nie, sprawdź zasilanie. Jeśli świeci, ale brama nie reaguje, zresetuj sterownik – odłącz zasilanie na 10 sekund."
-- Pytanie: "Jak zmienić kod w alarmie Paradox?"
-  → Odpowiedź: "Aby zmienić kod użytkownika, należy wejść w tryb programowania użytkownika: na klawiaturze wpisz [kod serwisowy] + [0] + [nowy kod]. Dokładną instrukcję znajdziesz w dokumentacji."
-- Pytanie: "Kamera nie nagrywa"
-  → Odpowiedź: "Sprawdź, czy na rejestratorze jest wolne miejsce na dysku. Jeśli nie, nagrania starsze niż X dni są automatycznie kasowane. Możesz też sprawdzić, czy kamera jest widoczna w menu – jeśli nie, sprawdź połączenie sieciowe."
-
-PAMIĘTAJ: Twoim celem jest pomóc użytkownikowi rozwiązać prosty problem lub skierować go do serwisu.
+4. Jeśli problem jest poważny, zasugeruj wezwanie serwisu.
+5. Bądź uprzejmy i cierpliwy.
 """
 
-        # Wywołanie Groq API (tak samo jak wcześniej)
         async with httpx.AsyncClient() as client:
             response = await client.post(
                 "https://api.groq.com/openai/v1/chat/completions",
@@ -93,12 +78,12 @@ PAMIĘTAJ: Twoim celem jest pomóc użytkownikowi rozwiązać prosty problem lub
                     "Content-Type": "application/json"
                 },
                 json={
-                    "model": "mixtral-8x7b-32768",
+                    "model": "llama-3.3-70b-versatile",  # актуальная модель
                     "messages": [
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": request.message}
                     ],
-                    "temperature": 0.3,  # niższa temperatura = bardziej przewidywalne odpowiedzi
+                    "temperature": 0.3,
                     "max_tokens": 800,
                     "top_p": 0.9
                 },
@@ -112,11 +97,6 @@ PAMIĘTAJ: Twoim celem jest pomóc użytkownikowi rozwiązać prosty problem lub
             data = response.json()
             reply = data["choices"][0]["message"]["content"]
 
-            # Opcjonalnie: sprawdzenie czy odpowiedź jest po polsku (zawiera polskie znaki)
-            if not re.search('[ąćęłńóśźżĄĆĘŁŃÓŚŹŻa-zA-Z]', reply):
-                # Jeśli odpowiedź nie zawiera polskich liter, może być problem – ale rzadko
-                print("⚠️ Odpowiedź może nie być po polsku, ale zwracamy jak jest.")
-
             print(f"✅ Odpowiedź wysłana")
             return ChatResponse(reply=reply, session_id=request.session_id)
 
@@ -125,6 +105,11 @@ PAMIĘTAJ: Twoim celem jest pomóc użytkownikowi rozwiązać prosty problem lub
     except Exception as e:
         print(f"💥 Błąd: {str(e)}")
         return ChatResponse(reply="Wystąpił błąd. Proszę spróbować później.", session_id=request.session_id)
+
+# Явная обработка OPTIONS для preflight (на всякий случай)
+@app.options("/chat")
+async def options_chat():
+    return JSONResponse(status_code=200, content={"message": "OK"})
 
 @app.get("/health")
 async def health():
