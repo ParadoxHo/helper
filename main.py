@@ -1,12 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import openai
+import google.generativeai as genai
 import os
 from typing import Optional
 
 # Создаём приложение
-app = FastAPI(title="AZS Support Bot - Novita AI (Free)")
+app = FastAPI(title="AZS Support Bot - Google Gemini (FREE)")
 
 # Настройка CORS с твоим доменом
 app.add_middleware(
@@ -23,13 +23,12 @@ app.add_middleware(
 )
 
 # Получаем ключ API из переменных окружения
-NOVITA_API_KEY = os.getenv("NOVITA_API_KEY")
-if not NOVITA_API_KEY:
-    print("⚠️  WARNING: NOVITA_API_KEY не установлен!")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+if not GEMINI_API_KEY:
+    print("⚠️  WARNING: GEMINI_API_KEY не установлен!")
 
-# Настройка OpenAI-совместимого клиента для Novita AI
-openai.api_key = NOVITA_API_KEY
-openai.api_base = "https://api.novita.ai/v3/openai"
+# Настройка Gemini
+genai.configure(api_key=GEMINI_API_KEY)
 
 class ChatRequest(BaseModel):
     message: str
@@ -44,24 +43,23 @@ SYSTEM_PROMPT = """
 Jesteś inżynierem wsparcia technicznego dla systemów bezpieczeństwa na stacjach benzynowych w Polsce.
 Twoja specjalizacja:
 - Systemy kontroli dostępu (szlabany, czytniki kart, zamki elektroniczne)
-- Monitoring wizyjny (kamery IP, rejestratory, przeglądanie archiwum)
-- Systemy alarmowe (czujki ruchu, sygnalizacja, panele sterowania)
+- Monitoring wizyjny (kamery IP, rejestratory)
+- Systemy alarmowe (czujki, sygnalizacja)
 
 WAŻNE ZASADY:
 1. Odpowiadaj TYLKO po polsku, krótko i konkretnie.
-2. Zawsze zaczynaj od najprostszych rzeczy diagnostycznych (sprawdź zasilanie, kable).
+2. Zawsze zaczynaj od najprostszych rzeczy (sprawdź zasilanie, kable).
 3. Jeśli problem jest prosty – podaj instrukcję krok po kroku.
 4. Jeśli problem wymaga interwencji technika – zaproponuj wezwanie serwisu.
-5. Bądź uprzejmy, profesjonalny i cierpliwy.
 """
 
 @app.get("/")
 def root():
     return {
-        "message": "AZS Support Bot API (Novita AI - FREE model) działa! 🇵🇱",
+        "message": "AZS Support Bot API (Google Gemini FREE) działa! 🇵🇱",
         "status": "online",
-        "provider": "Novita AI",
-        "model": "meta-llama/llama-3.3-3b-instruct (FREE)",
+        "provider": "Google AI Studio",
+        "model": "gemini-2.0-flash (1500 requests/day FREE)",
         "endpoints": {
             "chat": "/chat - wyślij wiadomość POST z {'message': 'tekst'}"
         }
@@ -72,63 +70,48 @@ async def chat(request: ChatRequest):
     if not request.message:
         raise HTTPException(status_code=400, detail="Wiadomość nie może być pusta")
     
-    if not NOVITA_API_KEY:
-        raise HTTPException(status_code=500, detail="Brak klucza API")
+    if not GEMINI_API_KEY:
+        raise HTTPException(status_code=500, detail="Brak klucza API Gemini")
     
     try:
-        print(f"📤 Wysyłam zapytanie do Novita AI (FREE): {request.message[:50]}...")
+        print(f"📤 Wysyłam zapytanie do Gemini: {request.message[:50]}...")
         
-        # 🔥 ИЗМЕНЕНИЕ ТОЛЬКО ЗДЕСЬ: используем бесплатную модель
-        response = openai.ChatCompletion.create(
-            model="meta-llama/llama-3.3-3b-instruct",  # Бесплатная модель!
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": request.message}
-            ],
-            temperature=0.3,
-            max_tokens=800
+        # Используем модель Gemini 2.0 Flash (1500 запросов/день бесплатно)
+        model = genai.GenerativeModel(
+            'gemini-2.0-flash',
+            generation_config={
+                "temperature": 0.3,
+                "max_output_tokens": 800,
+                "top_p": 0.9,
+            }
         )
         
-        reply = response.choices[0].message.content
-        print(f"✅ Otrzymano odpowiedź ({len(reply)} znaków)")
+        # Формируем запрос с системным промптом
+        full_prompt = f"{SYSTEM_PROMPT}\n\nUżytkownik: {request.message}\nAsystent:"
+        
+        response = model.generate_content(full_prompt)
+        
+        reply = response.text
+        
+        print(f"✅ Otrzymano odpowiedź od Gemini ({len(reply)} znaków)")
         
         return ChatResponse(reply=reply, session_id=request.session_id)
     
-    except openai.error.APIError as e:
-        error_str = str(e)
-        if "NOT_ENOUGH_BALANCE" in error_str or "not enough balance" in error_str.lower():
-            print(f"💰 Brak środków - ale to dziwne, bo model FREE powinien działać!")
-            raise HTTPException(
-                status_code=402, 
-                detail="Problem z darmowym modelem. Spróbuj później lub dodaj środki na konto."
-            )
-        else:
-            print(f"❌ Błąd API Novita: {error_str}")
-            raise HTTPException(status_code=500, detail=f"Błąd API: {error_str}")
-    
-    except openai.error.AuthenticationError as e:
-        print(f"🔑 Błąd autoryzacji: {str(e)}")
-        raise HTTPException(status_code=401, detail="Błąd autoryzacji - sprawdź klucz API")
-    
-    except openai.error.RateLimitError as e:
-        print(f"⏰ Przekroczono limit: {str(e)}")
-        raise HTTPException(status_code=429, detail="Przekroczono limit zapytań")
-    
     except Exception as e:
-        print(f"💥 Nieoczekiwany błąd: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Wewnętrzny błąd serwera: {str(e)}")
+        print(f"💥 Błąd Gemini: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Błąd serwera: {str(e)}")
 
 @app.get("/health")
 def health_check():
     return {
         "status": "healthy",
-        "api_key_configured": bool(NOVITA_API_KEY),
-        "model": "meta-llama/llama-3.3-3b-instruct (FREE)",
+        "api_key_configured": bool(GEMINI_API_KEY),
+        "model": "gemini-2.0-flash (FREE)",
         "cors_origins": ["https://asistics.netlify.app", "localhost"]
     }
 
 if __name__ == "__main__":
     import uvicorn
     port = int(os.getenv("PORT", 8000))
-    print(f"🚀 Uruchamianie serwera Novita AI (FREE model) na porcie {port}")
+    print(f"🚀 Uruchamianie serwera Gemini FREE na porcie {port}")
     uvicorn.run(app, host="0.0.0.0", port=port)
