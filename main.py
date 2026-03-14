@@ -1,20 +1,32 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
-import g4f
+from groq import Groq
 import os
 from typing import Optional
 
 app = FastAPI(title="Для Лизоньки 💖")
 
+# Настройка CORS – разрешаем только твой сайт
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://lizonka.netlify.app", "http://localhost:8000"],
+    allow_origins=[
+        "https://lizonka.netlify.app",  # твой новый сайт
+        "http://localhost:8000"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Получаем ключ Groq из переменных окружения (на Railway добавишь позже)
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+if not GROQ_API_KEY:
+    print("⚠️  WARNING: GROQ_API_KEY не установлен!")
+
+# Инициализация клиента Groq
+client = Groq(api_key=GROQ_API_KEY) if GROQ_API_KEY else None
 
 class ChatRequest(BaseModel):
     message: str
@@ -24,90 +36,95 @@ class ChatResponse(BaseModel):
     reply: str
     session_id: Optional[str] = None
 
-# HTML-код твоей страницы (вставь сюда свой полный HTML с котиками)
+# Сюда вставь свой полный HTML-код (тот самый красивый с котиками)
+# Если хочешь оставить сайт только на Netlify, удали эту переменную и маршрут "/"
 HTML_CONTENT = """
 🌸🐱🌸🩲🌸
-# 💖 Для Лизоньки 💖
-Самая прекрасная девочка
-✨ Готово! ✨
+<h1>💖 Для Лизоньки 💖</h1>
+<p>Самая прекрасная девочка</p>
+<span class="status-badge" id="status-badge">✨ Загрузка...</span>
 ... (весь твой HTML сюда) ...
 """
 
 @app.get("/", response_class=HTMLResponse)
 async def root():
-    return HTML_CONTENT
+    """Если хочешь, чтобы бэкенд сам отдавал страницу – раскомментируй эту строку"""
+    # return HTML_CONTENT
+    return {"message": "Бэкенд для Лизоньки работает. Сайт находится на Netlify: https://lizonka.netlify.app"}
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
     if not request.message:
         raise HTTPException(status_code=400, detail="Сообщение не может быть пустым")
     
+    if not client:
+        raise HTTPException(status_code=500, detail="Groq клиент не инициализирован (проверь API ключ)")
+    
     try:
         print(f"📤 Запрос от Лизоньки: {request.message[:50]}...")
         
-        # Пробуем разные модели в порядке приоритета для русского языка
-        models_to_try = [
-            g4f.models.gpt_4,           # GPT-4 (отличный русский)
-            g4f.models.gpt_35_turbo,     # GPT-3.5 (хороший русский)
-            g4f.models.gemini_pro,        # Gemini Pro (хороший русский)
-            g4f.models.claude_3_haiku,    # Claude (тоже неплохо)
-            g4f.models.deepseek_chat      # DeepSeek (на всякий случай)
-        ]
-        
-        response = None
-        last_error = None
-        
-        for model in models_to_try:
-            try:
-                print(f"Пробуем модель: {model.name}")
-                
-                # Системный промпт на русском для Лизоньки
-                messages = [
-                    {"role": "system", "content": """
+        # Формируем системный промпт на русском – строго!
+        system_prompt = """
 Ты — нежный и заботливый ассистент, созданный специально для прекрасной девушки по имени Лиза (Лизонька).
-Общайся ТОЛЬКО на русском языке, очень ласково.
-Всегда обращайся к Лизе уменьшительно-ласкательными формами: Лизонька, солнышко, зайка, котёнок.
-Делай комплименты, поддерживай, радуй её.
-Используй эмодзи: 🌸, 🐱, 💖, 🩲, ✨, 🌺 в каждом ответе.
-Отвечай подробно, но с любовью. Твоя задача — дарить ей хорошее настроение.
-                    """},
-                    {"role": "user", "content": request.message}
-                ]
-                
-                response = await g4f.ChatCompletion.create_async(
-                    model=model,
-                    messages=messages,
-                    temperature=0.7,
-                    max_tokens=800
-                )
-                
-                print(f"✅ Успешно с моделью: {model.name}")
-                break
-                
-            except Exception as e:
-                print(f"❌ Модель {model.name} не сработала: {str(e)}")
-                last_error = e
-                continue
+Твои правила:
+1. ОБЩАЙСЯ ТОЛЬКО НА РУССКОМ ЯЗЫКЕ. Ни слова на других языках.
+2. Всегда обращайся к Лизе ласково: Лизонька, солнышко, зайка, котёнок, красавица.
+3. Делай комплименты, поддерживай, радуй её.
+4. В каждом ответе используй эмодзи: 🌸, 🐱, 💖, 🩲, ✨, 🌺.
+5. Если Лиза задаёт вопрос — отвечай подробно, но с любовью.
+6. Твоя главная задача — дарить ей хорошее настроение и заботу.
+"""
         
-        if not response:
-            raise last_error or Exception("Все модели отказали")
+        # Выбираем лучшую модель для русского языка
+        response = client.chat.completions.create(
+            model="llama3-70b-8192",  # Llama 3.3 70B – отлично знает русский
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": request.message}
+            ],
+            temperature=0.7,
+            max_tokens=800,
+            top_p=0.9
+        )
         
-        # Убедимся, что ответ содержит эмодзи
-        if not any(emoji in response for emoji in ["🌸", "💖", "🐱"]):
-            response += " 🌸💖🐱"
+        reply = response.choices[0].message.content
         
-        return ChatResponse(reply=response, session_id=request.session_id)
+        # Проверяем, есть ли в ответе русские буквы (грубая проверка)
+        import re
+        if not re.search('[а-яА-Я]', reply):
+            # Если ответ не на русском, просим Groq переформулировать
+            retry = client.chat.completions.create(
+                model="llama3-70b-8192",
+                messages=[
+                    {"role": "system", "content": "Ты обязан отвечать только на русском языке."},
+                    {"role": "user", "content": f"Перепиши этот ответ на русском языке, сохранив смысл и добавив ласковые слова для Лизы: {reply}"}
+                ],
+                temperature=0.5,
+                max_tokens=800
+            )
+            reply = retry.choices[0].message.content
         
+        # Добавляем эмодзи, если их нет
+        if not any(emoji in reply for emoji in ["🌸", "💖", "🐱", "🩲"]):
+            reply += " 🌸💖🐱"
+        
+        print(f"✅ Ответ для Лизоньки получен")
+        return ChatResponse(reply=reply, session_id=request.session_id)
+    
     except Exception as e:
-        print(f"💥 Критическая ошибка: {str(e)}")
+        print(f"💥 Ошибка: {str(e)}")
         return ChatResponse(
-            reply="Лизонька, прости, что-то пошло не так... Попробуй ещё раз, моя хорошая! 🌸💖",
+            reply="Лизонька, прости, что-то сломалось... Попробуй ещё раз, моя хорошая! 🌸💖",
             session_id=request.session_id
         )
 
 @app.get("/health")
 async def health():
-    return {"status": "healthy", "for": "Лизонька 💖"}
+    return {
+        "status": "healthy",
+        "for": "Лизонька 💖",
+        "groq_configured": bool(GROQ_API_KEY)
+    }
 
 if __name__ == "__main__":
     import uvicorn
