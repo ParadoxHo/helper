@@ -1,12 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import requests
+import openai  # Возвращаемся к библиотеке openai
 import os
 from typing import Optional
 
 # Создаём приложение
-app = FastAPI(title="AZS Support Bot - DeepSeek")
+app = FastAPI(title="AZS Support Bot - Novita AI")
 
 # Настройка CORS с твоим доменом
 app.add_middleware(
@@ -23,9 +23,13 @@ app.add_middleware(
 )
 
 # Получаем ключ API из переменных окружения
-DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
-if not DEEPSEEK_API_KEY:
-    print("⚠️  WARNING: DEEPSEEK_API_KEY не установлен!")
+NOVITA_API_KEY = os.getenv("NOVITA_API_KEY")
+if not NOVITA_API_KEY:
+    print("⚠️  WARNING: NOVITA_API_KEY не установлен!")
+
+# Настройка OpenAI-совместимого клиента для Novita AI
+openai.api_key = NOVITA_API_KEY
+openai.api_base = "https://api.novita.ai/v3/openai"  # Важно: базовый URL Novita
 
 # Модель запроса от клиента
 class ChatRequest(BaseModel):
@@ -37,7 +41,7 @@ class ChatResponse(BaseModel):
     reply: str
     session_id: Optional[str] = None
 
-# Системный промпт на польском языке (специально для техподдержки АЗС)
+# Системный промпт на польском языке (тот же, что и был)
 SYSTEM_PROMPT = """
 Jesteś inżynierem wsparcia technicznego dla systemów bezpieczeństwa na stacjach benzynowych w Polsce.
 Twoja specjalizacja:
@@ -62,8 +66,9 @@ TYPOWE PROBLEMY I ROZWIĄZANIA:
 @app.get("/")
 def root():
     return {
-        "message": "AZS Support Bot API (DeepSeek) działa! 🇵🇱",
+        "message": "AZS Support Bot API (Novita AI) działa! 🇵🇱",
         "status": "online",
+        "provider": "Novita AI",
         "endpoints": {
             "chat": "/chat - wyślij wiadomość POST z {'message': 'tekst'}"
         }
@@ -76,85 +81,74 @@ async def chat(request: ChatRequest):
         raise HTTPException(status_code=400, detail="Wiadomość nie może być pusta")
     
     # Проверяем наличие API ключа
-    if not DEEPSEEK_API_KEY:
+    if not NOVITA_API_KEY:
         raise HTTPException(status_code=500, detail="Błąd konfiguracji serwera: brak klucza API")
     
-    # Подготовка запроса к DeepSeek API
-    url = "https://api.deepseek.com/v1/chat/completions"
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {DEEPSEEK_API_KEY}"
-    }
-    
-    data = {
-        "model": "deepseek-chat",  # Можно использовать "deepseek-reasoner" для сложных случаев
-        "messages": [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": request.message}
-        ],
-        "temperature": 0.3,        # Низкая температура = более предсказуемые ответы
-        "max_tokens": 800,          # Максимальная длина ответа
-        "top_p": 0.9,
-        "frequency_penalty": 0.1,
-        "presence_penalty": 0.1,
-        "stream": False
-    }
-    
     try:
-        print(f"📤 Wysyłam zapytanie do DeepSeek: {request.message[:50]}...")
+        print(f"📤 Wysyłam zapytanie do Novita AI: {request.message[:50]}...")
         
-        # Отправляем запрос к DeepSeek
-        response = requests.post(url, headers=headers, json=data, timeout=30)
-        
-        # Проверяем статус ответа
-        if response.status_code != 200:
-            error_text = response.text
-            print(f"❌ Błąd DeepSeek API: {response.status_code} - {error_text}")
-            
-            # Пытаемся распарсить ошибку
-            try:
-                error_json = response.json()
-                error_message = error_json.get('error', {}).get('message', 'Nieznany błąd')
-            except:
-                error_message = error_text
-            
-            raise HTTPException(
-                status_code=500, 
-                detail=f"Błąd DeepSeek API ({response.status_code}): {error_message}"
-            )
+        # Используем стандартный OpenAI-совместимый вызов
+        response = openai.ChatCompletion.create(
+            model="meta-llama/llama-3.3-70b-instruct",  # Одна из доступных моделей
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": request.message}
+            ],
+            temperature=0.3,
+            max_tokens=800,
+            top_p=0.9,
+            frequency_penalty=0.1,
+            presence_penalty=0.1
+        )
         
         # Получаем ответ
-        result = response.json()
-        reply = result['choices'][0]['message']['content']
+        reply = response.choices[0].message.content
         
-        # Логируем успех
-        print(f"✅ Otrzymano odpowiedź od DeepSeek ({len(reply)} znaków)")
+        print(f"✅ Otrzymano odpowiedź od Novita AI ({len(reply)} znaków)")
         
         return ChatResponse(reply=reply, session_id=request.session_id)
     
-    except requests.exceptions.Timeout:
-        print("⏰ Timeout przy połączeniu z DeepSeek")
-        raise HTTPException(status_code=504, detail="Przekroczono czas oczekiwania na odpowiedź")
+    except openai.error.AuthenticationError as e:
+        print(f"🔑 Błąd autoryzacji: {str(e)}")
+        raise HTTPException(status_code=401, detail="Błąd autoryzacji API - sprawdź klucz")
     
-    except requests.exceptions.ConnectionError:
-        print("🔌 Błąd połączenia z DeepSeek")
-        raise HTTPException(status_code=503, detail="Nie można połączyć się z serwerem DeepSeek")
+    except openai.error.RateLimitError as e:
+        print(f"⏰ Przekroczono limit: {str(e)}")
+        raise HTTPException(status_code=429, detail="Przekroczono limit zapytań")
+    
+    except openai.error.InsufficientQuotaError as e:
+        print(f"💰 Brak środków: {str(e)}")
+        raise HTTPException(status_code=402, detail="Brak środków na koncie Novita AI")
+    
+    except openai.error.APIError as e:
+        print(f"❌ Błąd API Novita: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Błąd API Novita: {str(e)}")
     
     except Exception as e:
         print(f"💥 Nieoczekiwany błąd: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Wewnętrzny błąd serwera: {str(e)}")
 
-# Добавим эндпоинт для проверки статуса
+# Эндпоинт для проверки статуса
 @app.get("/health")
 def health_check():
+    # Проверяем доступность Novita API простым запросом
+    novita_status = "unknown"
+    try:
+        # Простая проверка через список моделей
+        openai.Model.list()
+        novita_status = "connected"
+    except:
+        novita_status = "disconnected"
+    
     return {
         "status": "healthy",
-        "api_key_configured": bool(DEEPSEEK_API_KEY),
+        "api_key_configured": bool(NOVITA_API_KEY),
+        "novita_connection": novita_status,
         "cors_origins": ["https://asistics.netlify.app", "localhost"]
     }
 
 if __name__ == "__main__":
     import uvicorn
     port = int(os.getenv("PORT", 8000))
-    print(f"🚀 Uruchamianie serwera na porcie {port}")
+    print(f"🚀 Uruchamianie serwera Novita AI na porcie {port}")
     uvicorn.run(app, host="0.0.0.0", port=port)
