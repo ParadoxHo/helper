@@ -8,13 +8,18 @@ from typing import Optional
 # Создаём приложение
 app = FastAPI(title="AZS Support Bot")
 
-# Разрешаем запросы с любых доменов (для тестирования)
+# Разрешаем запросы с твоего сайта и локальных адресов
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # В продакшене лучше указать конкретные домены
+    allow_origins=[
+        "https://asistics.netlify.app",  # Твой сайт на Netlify
+        "http://localhost:8000",          # Для локального теста
+        "http://127.0.0.1:8000",          # Для локального теста
+        "https://assistics.up.railway.app" # Сам бэкенд (на всякий случай)
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Разрешаем все HTTP методы
+    allow_headers=["*"],  # Разрешаем все заголовки
 )
 
 # Получаем ключ API из переменных окружения
@@ -25,7 +30,7 @@ if not openai.api_key:
 # Модель запроса от клиента
 class ChatRequest(BaseModel):
     message: str
-    session_id: Optional[str] = None  # для логирования, опционально
+    session_id: Optional[str] = None
 
 # Модель ответа
 class ChatResponse(BaseModel):
@@ -65,7 +70,7 @@ async def chat(request: ChatRequest):
     try:
         # Вызываем OpenAI API
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # можно заменить на gpt-4
+            model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": request.message}
@@ -81,11 +86,11 @@ async def chat(request: ChatRequest):
         return ChatResponse(reply=reply, session_id=request.session_id)
     
     except Exception as e:
-        # Логируем ошибку
         print(f"Błąd OpenAI: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Błąd serwera: {str(e)}")
 
 # Для локального запуска
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.getenv("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
