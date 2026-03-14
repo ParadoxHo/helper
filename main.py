@@ -56,7 +56,7 @@ def get_embedding_model():
     if embedding_model is None:
         print("⏳ Ładowanie modelu fastembed (może potrwać przy pierwszym uruchomieniu)...")
         # Model e5-small – lekki, wielojęzyczny, dobry do polskiego
-        embedding_model = TextEmbedding(model_name="intfloat/multilingual-e5-large")
+        embedding_model = TextEmbedding(model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
         print("✅ Model fastembed załadowany")
     return embedding_model
 
