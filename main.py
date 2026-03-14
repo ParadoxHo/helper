@@ -7,12 +7,12 @@ import os
 import re
 from typing import Optional
 
-app = FastAPI(title="Wsparcie Techniczne AZS")
+app = FastAPI(title="Wsparcie Techniczne")
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://lizonka.netlify.app",  # или твой будущий сайт поддержки
+        "https://assistics.netlify.app/",  # или твой будущий сайт поддержки
         "http://localhost:8000"
     ],
     allow_credentials=True,
@@ -93,7 +93,7 @@ PAMIĘTAJ: Twoim celem jest pomóc użytkownikowi rozwiązać prosty problem lub
                     "Content-Type": "application/json"
                 },
                 json={
-                    "model": "llama3-70b-8192",
+                    "model": "mixtral-8x7b-32768",
                     "messages": [
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": request.message}
