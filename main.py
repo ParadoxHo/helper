@@ -2,17 +2,17 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
-from groq import Groq
+import httpx
 import os
+import re
 from typing import Optional
 
 app = FastAPI(title="Для Лизоньки 💖")
 
-# Настройка CORS – разрешаем только твой сайт
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://lizonka.netlify.app",  # твой новый сайт
+        "https://lizonka.netlify.app",
         "http://localhost:8000"
     ],
     allow_credentials=True,
@@ -20,13 +20,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Получаем ключ Groq из переменных окружения (на Railway добавишь позже)
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 if not GROQ_API_KEY:
     print("⚠️  WARNING: GROQ_API_KEY не установлен!")
-
-# Инициализация клиента Groq
-client = Groq(api_key=GROQ_API_KEY) if GROQ_API_KEY else None
 
 class ChatRequest(BaseModel):
     message: str
@@ -36,34 +32,32 @@ class ChatResponse(BaseModel):
     reply: str
     session_id: Optional[str] = None
 
-# Сюда вставь свой полный HTML-код (тот самый красивый с котиками)
-# Если хочешь оставить сайт только на Netlify, удали эту переменную и маршрут "/"
-HTML_CONTENT = """
-🌸🐱🌸🩲🌸
-<h1>💖 Для Лизоньки 💖</h1>
-<p>Самая прекрасная девочка</p>
-<span class="status-badge" id="status-badge">✨ Загрузка...</span>
-... (весь твой HTML сюда) ...
-"""
+# Если хочешь, чтобы бэкенд отдавал HTML-страницу, раскомментируй и вставь свой код
+# HTML_CONTENT = """..."""
 
 @app.get("/", response_class=HTMLResponse)
 async def root():
-    """Если хочешь, чтобы бэкенд сам отдавал страницу – раскомментируй эту строку"""
-    # return HTML_CONTENT
-    return {"message": "Бэкенд для Лизоньки работает. Сайт находится на Netlify: https://lizonka.netlify.app"}
+    return """
+    <html>
+        <head><title>Для Лизоньки</title></head>
+        <body>
+            <h1>🌸 Сервер для Лизоньки работает 🌸</h1>
+            <p>Основной сайт: <a href="https://lizonka.netlify.app">lizonka.netlify.app</a></p>
+        </body>
+    </html>
+    """
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
     if not request.message:
         raise HTTPException(status_code=400, detail="Сообщение не может быть пустым")
     
-    if not client:
-        raise HTTPException(status_code=500, detail="Groq клиент не инициализирован (проверь API ключ)")
+    if not GROQ_API_KEY:
+        raise HTTPException(status_code=500, detail="GROQ_API_KEY не настроен")
     
     try:
         print(f"📤 Запрос от Лизоньки: {request.message[:50]}...")
         
-        # Формируем системный промпт на русском – строго!
         system_prompt = """
 Ты — нежный и заботливый ассистент, созданный специально для прекрасной девушки по имени Лиза (Лизонька).
 Твои правила:
@@ -75,48 +69,71 @@ async def chat(request: ChatRequest):
 6. Твоя главная задача — дарить ей хорошее настроение и заботу.
 """
         
-        # Выбираем лучшую модель для русского языка
-        response = client.chat.completions.create(
-            model="llama3-70b-8192",  # Llama 3.3 70B – отлично знает русский
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": request.message}
-            ],
-            temperature=0.7,
-            max_tokens=800,
-            top_p=0.9
-        )
-        
-        reply = response.choices[0].message.content
-        
-        # Проверяем, есть ли в ответе русские буквы (грубая проверка)
-        import re
-        if not re.search('[а-яА-Я]', reply):
-            # Если ответ не на русском, просим Groq переформулировать
-            retry = client.chat.completions.create(
-                model="llama3-70b-8192",
-                messages=[
-                    {"role": "system", "content": "Ты обязан отвечать только на русском языке."},
-                    {"role": "user", "content": f"Перепиши этот ответ на русском языке, сохранив смысл и добавив ласковые слова для Лизы: {reply}"}
-                ],
-                temperature=0.5,
-                max_tokens=800
+        # Прямой запрос к Groq API
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {GROQ_API_KEY}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "model": "llama3-70b-8192",
+                    "messages": [
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": request.message}
+                    ],
+                    "temperature": 0.7,
+                    "max_tokens": 800,
+                    "top_p": 0.9
+                },
+                timeout=30.0
             )
-            reply = retry.choices[0].message.content
-        
-        # Добавляем эмодзи, если их нет
-        if not any(emoji in reply for emoji in ["🌸", "💖", "🐱", "🩲"]):
-            reply += " 🌸💖🐱"
-        
-        print(f"✅ Ответ для Лизоньки получен")
-        return ChatResponse(reply=reply, session_id=request.session_id)
+            
+            if response.status_code != 200:
+                print(f"❌ Groq API ошибка: {response.status_code} - {response.text}")
+                raise HTTPException(status_code=502, detail="Ошибка от Groq API")
+            
+            data = response.json()
+            reply = data["choices"][0]["message"]["content"]
+            
+            # Проверка на наличие русских букв
+            if not re.search('[а-яА-Я]', reply):
+                # Пробуем повторно с явным указанием языка
+                retry_response = await client.post(
+                    "https://api.groq.com/openai/v1/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {GROQ_API_KEY}",
+                        "Content-Type": "application/json"
+                    },
+                    json={
+                        "model": "llama3-70b-8192",
+                        "messages": [
+                            {"role": "system", "content": "Ты обязан отвечать только на русском языке."},
+                            {"role": "user", "content": f"Перепиши этот ответ на русском языке, сохранив смысл и добавив ласковые слова для Лизы: {reply}"}
+                        ],
+                        "temperature": 0.5,
+                        "max_tokens": 800
+                    },
+                    timeout=30.0
+                )
+                if retry_response.status_code == 200:
+                    retry_data = retry_response.json()
+                    reply = retry_data["choices"][0]["message"]["content"]
+            
+            # Добавляем эмодзи, если их нет
+            if not any(emoji in reply for emoji in ["🌸", "💖", "🐱", "🩲"]):
+                reply += " 🌸💖🐱"
+            
+            print(f"✅ Ответ для Лизоньки получен")
+            return ChatResponse(reply=reply, session_id=request.session_id)
     
+    except httpx.TimeoutException:
+        print("⏰ Таймаут при запросе к Groq")
+        return ChatResponse(reply="Лизонька, прости, сервис долго отвечает... Попробуй ещё раз, моя хорошая! 🌸💖", session_id=request.session_id)
     except Exception as e:
         print(f"💥 Ошибка: {str(e)}")
-        return ChatResponse(
-            reply="Лизонька, прости, что-то сломалось... Попробуй ещё раз, моя хорошая! 🌸💖",
-            session_id=request.session_id
-        )
+        return ChatResponse(reply="Лизонька, что-то пошло не так, но я всё равно тебя люблю! Попробуй позже 💖", session_id=request.session_id)
 
 @app.get("/health")
 async def health():
