@@ -1,12 +1,13 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import google.generativeai as genai
+import aiohttp
+import asyncio
 import os
 from typing import Optional
 
 # Создаём приложение
-app = FastAPI(title="AZS Support Bot - Google Gemini (FREE)")
+app = FastAPI(title="AZS Support Bot - Puter.js (Free, No Key)")
 
 # Настройка CORS с твоим доменом
 app.add_middleware(
@@ -21,14 +22,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Получаем ключ API из переменных окружения
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-if not GEMINI_API_KEY:
-    print("⚠️  WARNING: GEMINI_API_KEY не установлен!")
-
-# Настройка Gemini
-genai.configure(api_key=GEMINI_API_KEY)
 
 class ChatRequest(BaseModel):
     message: str
@@ -56,10 +49,10 @@ WAŻNE ZASADY:
 @app.get("/")
 def root():
     return {
-        "message": "AZS Support Bot API (Google Gemini FREE) działa! 🇵🇱",
+        "message": "AZS Support Bot API (Puter.js FREE) działa! 🇵🇱",
         "status": "online",
-        "provider": "Google AI Studio",
-        "model": "gemini-2.0-flash (1500 requests/day FREE)",
+        "provider": "Puter.js + Cohere",
+        "note": "Działa bez klucza API!",
         "endpoints": {
             "chat": "/chat - wyślij wiadomość POST z {'message': 'tekst'}"
         }
@@ -70,48 +63,75 @@ async def chat(request: ChatRequest):
     if not request.message:
         raise HTTPException(status_code=400, detail="Wiadomość nie może być pusta")
     
-    if not GEMINI_API_KEY:
-        raise HTTPException(status_code=500, detail="Brak klucza API Gemini")
-    
     try:
-        print(f"📤 Wysyłam zapytanie do Gemini: {request.message[:50]}...")
+        print(f"📤 Wysyłam zapytanie do Puter.js: {request.message[:50]}...")
         
-        # Используем модель Gemini 2.0 Flash (1500 запросов/день бесплатно)
-        model = genai.GenerativeModel(
-            'gemini-2.0-flash',
-            generation_config={
-                "temperature": 0.3,
-                "max_output_tokens": 800,
-                "top_p": 0.9,
-            }
-        )
+        # Puter.js API endpoint - darmowy, nie wymaga klucza
+        url = "https://api.puter.com/v1/ai/chat"
         
-        # Формируем запрос с системным промптом
-        full_prompt = f"{SYSTEM_PROMPT}\n\nUżytkownik: {request.message}\nAsystent:"
+        # Przygotuj wiadomości z system promptem
+        messages = [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": request.message}
+        ]
         
-        response = model.generate_content(full_prompt)
+        # Użyj modelu Cohere (darmowy przez Puter.js)
+        payload = {
+            "model": "cohere/command-r-plus-08-2024",  # Najlepszy model Cohere
+            "messages": messages,
+            "stream": False,
+            "temperature": 0.3
+        }
         
-        reply = response.text
+        async with aiohttp.ClientSession() as session:
+            async with session.post(url, json=payload) as response:
+                if response.status != 200:
+                    error_text = await response.text()
+                    print(f"❌ Błąd Puter.js: {response.status} - {error_text}")
+                    
+                    # Spróbuj z fallbackowym modelem
+                    print("🔄 Próbuję z modelem fallback...")
+                    payload["model"] = "cohere/command-r7b-12-2024"  # Lżejszy model
+                    
+                    async with session.post(url, json=payload) as retry_response:
+                        if retry_response.status != 200:
+                            raise HTTPException(
+                                status_code=500, 
+                                detail="Nie można połączyć się z Puter.js"
+                            )
+                        
+                        result = await retry_response.json()
+                else:
+                    result = await response.json()
         
-        print(f"✅ Otrzymano odpowiedź od Gemini ({len(reply)} znaków)")
+        # Wyciągnij odpowiedź z wyniku
+        reply = result.get('message', {}).get('content', '')
+        if not reply:
+            reply = result.get('text', 'Brak odpowiedzi')
+        
+        print(f"✅ Otrzymano odpowiedź od Puter.js ({len(reply)} znaków)")
         
         return ChatResponse(reply=reply, session_id=request.session_id)
     
+    except asyncio.TimeoutError:
+        print("⏰ Timeout przy połączeniu z Puter.js")
+        raise HTTPException(status_code=504, detail="Przekroczono czas oczekiwania")
+    
     except Exception as e:
-        print(f"💥 Błąd Gemini: {str(e)}")
+        print(f"💥 Błąd: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Błąd serwera: {str(e)}")
 
 @app.get("/health")
 def health_check():
     return {
         "status": "healthy",
-        "api_key_configured": bool(GEMINI_API_KEY),
-        "model": "gemini-2.0-flash (FREE)",
+        "provider": "Puter.js (no API key needed)",
+        "model": "cohere/command-r-plus-08-2024",
         "cors_origins": ["https://asistics.netlify.app", "localhost"]
     }
 
 if __name__ == "__main__":
     import uvicorn
     port = int(os.getenv("PORT", 8000))
-    print(f"🚀 Uruchamianie serwera Gemini FREE na porcie {port}")
+    print(f"🚀 Uruchamianie serwera Puter.js na porcie {port}")
     uvicorn.run(app, host="0.0.0.0", port=port)
