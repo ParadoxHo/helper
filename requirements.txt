@@ -6,4 +6,5 @@ pydantic==2.4.2
 chromadb==0.4.22
 PyPDF2==3.0.1
 python-multipart==0.0.6
-numpy<2.0.0  # важная строка: фиксируем версию NumPy < 2.0
+numpy<2.0.0
+sentence-transformers==2.2.2
