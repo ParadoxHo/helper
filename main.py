@@ -5,14 +5,16 @@ from pydantic import BaseModel
 import httpx
 import os
 import re
-from typing import Optional
+from typing import Optional, List, Dict
+from collections import defaultdict
+from datetime import datetime, timedelta
 
 app = FastAPI(title="Wsparcie Techniczne AZS")
 
-# Разрешаем CORS для твоего фронтенда
+# CORS – разрешаем твой фронтенд
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://assistics.netlify.app", "http://localhost:8000"],  # без слеша в конце!
+    allow_origins=["https://assistics.netlify.app", "http://localhost:8000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -21,6 +23,20 @@ app.add_middleware(
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 if not GROQ_API_KEY:
     print("⚠️  WARNING: GROQ_API_KEY nie ustawiony!")
+
+# Хранилище историй диалогов (в памяти, для демо)
+# Структура: { session_id: {"messages": list, "last_updated": datetime} }
+history_store: Dict[str, Dict] = defaultdict(lambda: {"messages": [], "last_updated": datetime.now()})
+
+def cleanup_old_sessions(max_age_minutes: int = 60):
+    """Удаляет сессии, которые не обновлялись больше max_age_minutes."""
+    now = datetime.now()
+    to_delete = []
+    for sid, data in history_store.items():
+        if now - data["last_updated"] > timedelta(minutes=max_age_minutes):
+            to_delete.append(sid)
+    for sid in to_delete:
+        del history_store[sid]
 
 class ChatRequest(BaseModel):
     message: str
@@ -41,10 +57,16 @@ async def chat(request: ChatRequest):
     if not GROQ_API_KEY:
         raise HTTPException(status_code=500, detail="Brak klucza API Groq")
 
-    try:
-        print(f"📤 Zapytanie: {request.message[:50]}...")
+    # Определяем session_id (если не передан, используем "default")
+    sid = request.session_id or "default"
+    cleanup_old_sessions()  # очищаем старые сессии
 
-        system_prompt = """
+    session_data = history_store[sid]
+    session_data["last_updated"] = datetime.now()
+    history = session_data["messages"]
+
+    # Системный промпт (на польском)
+    system_prompt = """
 Jesteś inżynierem wsparcia technicznego pierwszej linii dla systemów bezpieczeństwa na stacjach benzynowych.
 Twoi rozmówcy to pracownicy stacji (operatorzy), którzy nie są specjalistami. Mówią po polsku.
 
@@ -68,7 +90,22 @@ ZASADY:
    - wymień baterię w czujce bezprzewodowej
 4. Jeśli problem jest poważny, zasugeruj wezwanie serwisu.
 5. Bądź uprzejmy i cierpliwy.
+6. Pamiętaj kontekst rozmowy – odpowiadaj na pytania użytkownika w sposób ciągły.
 """
+
+    # Если история пуста, добавляем system prompt
+    if not history:
+        history.append({"role": "system", "content": system_prompt})
+
+    # Добавляем текущее сообщение пользователя
+    history.append({"role": "user", "content": request.message})
+
+    # Ограничиваем длину истории (оставляем system + последние 10 сообщений)
+    if len(history) > 11:  # system + 10 сообщений (user/assistant)
+        history = [history[0]] + history[-10:]
+
+    try:
+        print(f"📤 Zapytanie (sesja {sid}): {request.message[:50]}...")
 
         async with httpx.AsyncClient() as client:
             response = await client.post(
@@ -79,10 +116,7 @@ ZASADY:
                 },
                 json={
                     "model": "llama-3.3-70b-versatile",  # актуальная модель
-                    "messages": [
-                        {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": request.message}
-                    ],
+                    "messages": history,
                     "temperature": 0.3,
                     "max_tokens": 800,
                     "top_p": 0.9
@@ -97,16 +131,21 @@ ZASADY:
             data = response.json()
             reply = data["choices"][0]["message"]["content"]
 
-            print(f"✅ Odpowiedź wysłana")
-            return ChatResponse(reply=reply, session_id=request.session_id)
+        # Добавляем ответ ассистента в историю
+        history.append({"role": "assistant", "content": reply})
+
+        # Сохраняем обновленную историю
+        session_data["messages"] = history
+
+        print(f"✅ Odpowiedź wysłana (sesja {sid})")
+        return ChatResponse(reply=reply, session_id=sid)
 
     except httpx.TimeoutException:
-        return ChatResponse(reply="Przepraszam, serwis nie odpowiada. Spróbuj ponownie za chwilę.", session_id=request.session_id)
+        return ChatResponse(reply="Przepraszam, serwis nie odpowiada. Spróbuj ponownie za chwilę.", session_id=sid)
     except Exception as e:
         print(f"💥 Błąd: {str(e)}")
-        return ChatResponse(reply="Wystąpił błąd. Proszę spróbować później.", session_id=request.session_id)
+        return ChatResponse(reply="Wystąpił błąd. Proszę spróbować później.", session_id=sid)
 
-# Явная обработка OPTIONS для preflight (на всякий случай)
 @app.options("/chat")
 async def options_chat():
     return JSONResponse(status_code=200, content={"message": "OK"})
