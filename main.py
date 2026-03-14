@@ -22,7 +22,7 @@ app = FastAPI(title="Wsparcie Techniczne AZS z RAG (fastembed)")
 # CORS – на время отладки разрешаем всё, но добавим явный обработчик OPTIONS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # временно разрешаем все источники
+    allow_origins=["https://assistics.netlify.app"],  # временно разрешаем все источники
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -56,7 +56,7 @@ def get_embedding_model():
     if embedding_model is None:
         print("⏳ Ładowanie modelu fastembed (może potrwać przy pierwszym uruchomieniu)...")
         # Model e5-small – lekki, wielojęzyczny, dobry do polskiego
-        embedding_model = TextEmbedding(model_name="intfloat/multilingual-e5-small")
+        embedding_model = TextEmbedding(model_name="intfloat/multilingual-e5-large")
         print("✅ Model fastembed załadowany")
     return embedding_model
 
