@@ -326,7 +326,7 @@ Twoim zadaniem jest rozwiązywanie problemów technicznych zgłaszanych przez op
                             "Content-Type": "application/json"
                         },
                         json={
-                            "model": "llama-3.3-70b-versatile",
+                            "model": "llama-3.1-8b-instant",
                             "messages": history,
                             "temperature": 0.3,
                             "max_tokens": 600,
