@@ -51,9 +51,9 @@ COLLECTION_NAME = "azs_instructions"
 
 # Словарь для определения типа устройства по имени файла
 DEVICE_KEYWORDS = {
-    "rosslare": ["rosslare", "ac-b32", "axtraxng"],
-    "paradox": ["paradox", "evo192", "sp65", "sp4000"],
-    "bosch": ["bosch", "bvms", "divar", "avenar"],
+    "rosslare": ["rosslare", "ac-b32", "kontrola", "axtraxng"],
+    "paradox": ["paradox", "evo192", "sp65", "evo", "sp4000"],
+    "bosch": ["bosch", "bvms", "divar", "bvc", "avenar"],
     "siemens": ["siemens", "vectis"],
     "3xlogic": ["3xlogic"],
     "provision": ["provision", "isr"],
