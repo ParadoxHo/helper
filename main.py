@@ -360,7 +360,7 @@ Twoim zadaniem jest rozwiązywanie problemów technicznych zgłaszanych przez op
                             "Content-Type": "application/json"
                         },
                         json={
-                            "model": "gemma-3-27b-it",  # lżejszy model
+                            "model": "gemma-7b-it",  # lżejszy model
                             "messages": history,
                             "temperature": 0.3,
                             "max_tokens": 500,
