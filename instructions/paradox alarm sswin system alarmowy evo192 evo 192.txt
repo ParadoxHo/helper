@@ -1,0 +1,41 @@
+Problem	Rozwiązanie
+Jak zmienić kod użytkownika w systemie Paradox?	1️⃣ Wprowadź aktualny kod użytkownika.
+2️⃣ Naciśnij przycisk [0] (zero).
+3️⃣ Wprowadź nowy, 4-cyfrowy kod.
+4️⃣ Naciśnij [ENTER] aby zatwierdzić. Uwaga: procedura może się różnić w zależności od konfiguracji systemu; jeśli nie działa, skontaktuj się z instalatorem.
+Jak skasować (zresetować) alarm po zadziałaniu?	1️⃣ Rozbrój system wprowadzając swój kod dostępu – alarm powinien się wyłączyć.
+2️⃣ Jeśli alarm był wywołany przez czujkę, upewnij się, że przyczyna alarmu została usunięta (np. zamknięto drzwi/okno).
+3️⃣ W przypadku fałszywego alarmu, po rozbrojeniu system sam się zresetuje. Jeśli diody nadal sygnalizują alarm, wpisz kod ponownie lub skontaktuj się z serwisem.
+Po naciśnięciu przycisku alarmowego sygnał nie dociera do stacji monitorującej / agencji ochrony.	1️⃣ Po każdym naciśnięciu przycisku alarmowego (np. Panic, ROP) należy zresetować alarm – przywrócić przycisk do pozycji początkowej za pomocą kluczyka.
+2️⃣ Przed ponownym naciśnięciem tego samego lub innego przycisku alarmowego odczekaj minimum 10 sekund.
+3️⃣ Jeśli problem nadal występuje, sprawdź połączenie sieciowe (GSM/LAN) i skontaktuj się z serwisem.
+Jak uzbroić system (wszystkie linie) przed wyjściem?	1️⃣ Wprowadź swój [KOD DOSTĘPU].
+2️⃣ Wciśnij [ARM] – uzbroi to cały system (wszystkie linie muszą być zamknięte).
+3️⃣ Wybierz partycję lub wciśnij [0] dla wszystkich partycji.
+Jak uzbroić system, gdy niektóre linie są otwarte (np. okna)?	1️⃣ Wprowadź swój [KOD DOSTĘPU].
+2️⃣ Wciśnij [FORCE] – system uzbroi się mimo otwartych linii, które zostaną automatycznie dozbrojone po ich zamknięciu.
+3️⃣ Wybierz partycję lub wciśnij [0] dla wszystkich partycji.
+Jak uzbroić system, pozostając w środku (tryb obwodowy)?	1️⃣ Wprowadź swój [KOD DOSTĘPU].
+2️⃣ Wciśnij [STAY] – system uzbroi się w trybie obwodowym (czujki wewnętrzne wyłączone, obwodowe aktywne).
+3️⃣ Wybierz partycję lub wciśnij [0] dla wszystkich partycji.
+Jak wyłączyć opóźnienie na wejście podczas uzbrojenia obwodowego?	1️⃣ Wprowadź swój [KOD DOSTĘPU].
+2️⃣ Wciśnij [STAY], a następnie [5] – linie opóźnione staną się liniami natychmiastowymi.
+Jak rozbroić system po wejściu?	1️⃣ Wprowadź swój [KOD DOSTĘPU].
+2️⃣ Wybierz partycję (jeśli to konieczne).
+Jak rozbroić system uzbrojony obwodowo?	1️⃣ Wprowadź swój [KOD DOSTĘPU].
+2️⃣ Wciśnij przycisk [DISARM].
+3️⃣ Wybierz partycję (jeśli to konieczne).
+Jak sprawdzić usterki systemu?	1️⃣ Wciśnij przycisk [TBL].
+2️⃣ Przeglądaj usterki używając przycisków przewijania.
+3️⃣ Wykonaj czynności zalecane przez instrukcję użytkownika centrali EVO. Jeśli nie możesz ich usunąć, skontaktuj się z instalatorem.
+4️⃣ Wciśnij [CLEAR] aby wyjść.
+Jak wywołać alarm Panic (policyjny)?	Wciśnij i przytrzymaj przez 2 sekundy kombinację przycisków [1] i [3].
+Jak wywołać alarm Panic (medyczny)?	Wciśnij i przytrzymaj przez 2 sekundy kombinację przycisków [4] i [6].
+Jak wywołać alarm Panic (pożarowy)?	Wciśnij i przytrzymaj przez 2 sekundy kombinację przycisków [7] i [9].
+Jak zablokować (wyłączyć) linię?	1️⃣ Wprowadź swój [KOD DOSTĘPU].
+2️⃣ Wciśnij przycisk [BYP].
+3️⃣ Wybierz linię wprowadzając jej numer w postaci trzycyfrowej, np. linia 3 = 003.
+4️⃣ Wciśnij [ENTER].
+Jak sprawdzić, jakie alarmy wystąpiły podczas ostatniego uzbrojenia?	1️⃣ Rozbrój system.
+2️⃣ Wciśnij [MEM]. Na wyświetlaczu pojawią się linie, które wywołały alarm podczas ostatniego uzbrojenia. Użyj przycisków przewijania, aby je przeglądać.
+3️⃣ Wciśnij [CLEAR] aby wyjść.
