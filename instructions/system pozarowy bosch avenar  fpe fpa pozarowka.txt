@@ -1,0 +1,12 @@
+
+Problem	Rozwiązanie
+Pożar, który można ugasić podręcznymi środkami gaśniczymi	Należy ugasić pożar, a następnie wcisnąć przycisk „RESET”.
+Pożar, którego nie można ugasić, a instalacja jest podłączona do stacji monitoringu	Nacisnąć przycisk „Alarm Ręczny” (lub ręczny ostrzegacz pożarowy ROP) – spowoduje to natychmiastowe wywołanie alarmu II stopnia i powiadomienie straży pożarnej przez monitoring.
+Pożar, którego nie można ugasić, a instalacja nie jest podłączona do monitoringu	Wezwać straż pożarną telefonicznie (numer tel. straży pożarnej: …).
+Uszkodzenie sieci telefonicznej uniemożliwia wezwanie straży	Skorzystać z telefonu komórkowego (jeśli jest dostępny).
+Alarm okazał się fałszywy (w fazie T2)	Po upływie czasu określonego jako „Reset możliwy za” dotknąć pola „Reset” na wyświetlaczu, aby skasować zgłoszenie.
+Potwierdzenie alarmu w fazie T1	W ciągu czasu T1 dotknąć pola „Potwierdzenie” na wyświetlaczu – rozpocznie to odliczanie czasu T2 na badanie zagrożenia.
+Brak potwierdzenia alarmu w fazie T1	Jeśli użytkownik nie potwierdzi zgłoszenia przed upływem czasu T1, system automatycznie wywoła alarm II stopnia.
+Potrzeba natychmiastowego wywołania alarmu II stopnia (np. przy realnym zagrożeniu)	Dotknąć pola „Alarm ręczny” na wyświetlaczu lub nacisnąć najbliższy ręczny ostrzegacz pożarowy (ROP).
+Po ugaszeniu pożaru – dalsze postępowanie	Dokonać wpisów w książce pracy oraz powiadomić firmę serwisującą (numer tel. serwisu: …) w celu weryfikacji i ewentualnych napraw.
+Nie zresetowano fałszywego alarmu przed upływem czasu T2	Jeśli użytkownik nie zresetuje zgłoszenia w wyznaczonym czasie, system automatycznie wywoła alarm II stopnia.
