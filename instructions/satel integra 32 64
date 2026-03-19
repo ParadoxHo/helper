@@ -1,0 +1,167 @@
+Klawisz	Opis
+0-9	Wprowadzanie cyfr / liter
+#	Potwierdzenie (używane m.in. w menu uzbrajania/rozbrajania, wyborze opcji)
+*****	Wejście do menu użytkownika (po wpisaniu kodu) / Wyjście bez zapisu
+▲ / ▼	Poruszanie się po menu / przewijanie list
+◀ / ▶	Zmiana strony / przejście do trybu graficznego
+1 (przytrzymaj 3s)	Sprawdzenie stanu stref
+4 (przytrzymaj 3s)	Sprawdzenie stanu partycji
+5 (przytrzymaj 3s)	Podgląd alarmów w logu zdarzeń
+6 (przytrzymaj 3s)	Podgląd usterek w logu zdarzeń
+7 (przytrzymaj 3s)	Wyświetlenie bieżących usterek
+8 (przytrzymaj 3s)	Włączenie/wyłączenie sygnalizacji dźwiękowej CHIME
+9 (przytrzymaj 3s)	Przełączenie między trybem czuwania a prezentacją stanu partycji
+Przycisk z symbolem ognia (czerwony) – przytrzymaj 3s	Alarm pożarowy
+Przycisk z symbolem krzyża (medyczny) – przytrzymaj 3s	Alarm medyczny
+Przycisk z symbolem paniki (niebieski) – przytrzymaj 3s	Alarm napadowy
+1. Podstawowe operacje
+Jak wejść do menu użytkownika?
+1️⃣ Wprowadź kod dostępu i naciśnij * (gwiazdka).
+2️⃣ Na wyświetlaczu pojawi się menu użytkownika.
+
+Jak uzbroić system (wszystkie partycje) przed wyjściem?
+1️⃣ Wprowadź kod i naciśnij #.
+2️⃣ Jeśli żadna partycja nie jest uzbrojona, pojawi się menu uzbrajania. Wybierz Arm all i naciśnij #.
+
+Jak uzbroić wybrane partycje?
+1️⃣ Wprowadź kod i naciśnij #.
+2️⃣ W menu uzbrajania wybierz Arm selected (użyj strzałek ▲/▼, potwierdź #).
+3️⃣ Z listy wybierz partycje do uzbrojenia – dla każdej naciśnij odpowiedni klawisz cyfrowy (1-9), aż pojawi się symbol ■ (wybrane).
+4️⃣ Naciśnij # aby potwierdzić.
+
+Jak rozbroić system?
+1️⃣ Wprowadź kod i naciśnij #.
+2️⃣ System zostanie rozbrojony. Jeśli masz dostęp do kilku uzbrojonych partycji, pojawi się menu rozbrajania – wybierz odpowiednie opcje.
+
+Jak szybko uzbroić system (bez autoryzacji)?
+Funkcja dostępna, jeśli instalator zezwolił na szybkie uzbrajanie.
+1️⃣ Wybierz tryb uzbrojenia:
+
+0# – pełne uzbrojenie
+
+1# – pełne uzbrojenie z pominięciami
+
+2# – uzbrojenie bez czujek wewnętrznych
+
+3# – uzbrojenie bez wewnętrznych i bez opóźnienia wejścia
+2️⃣ System rozpocznie procedurę uzbrajania.
+
+Jak skrócić czas wyjścia?
+W trakcie odliczania czasu wyjścia naciśnij kolejno 9 i #.
+
+Jak wyciszyć alarm bez rozbrajania?
+1️⃣ Wprowadź kod i naciśnij *.
+2️⃣ W menu użytkownika znajdź funkcję Clear alarm (użyj strzałek).
+3️⃣ Naciśnij # aby potwierdzić.
+
+2. Zarządzanie użytkownikami i kodami
+Jak zmienić własny kod dostępu?
+1️⃣ Wprowadź aktualny kod i naciśnij *.
+2️⃣ Wpisz skrót [1] (Change own code).
+3️⃣ Wprowadź nowy kod (4-8 cyfr) i naciśnij #.
+4️⃣ System potwierdzi zmianę.
+
+Jak dodać nowego użytkownika? (wymaga uprawnień administratora)
+1️⃣ Wprowadź kod administratora i naciśnij *.
+2️⃣ Wpisz kolejno [2] (Users) i [1] (New user).
+3️⃣ Zdefiniuj parametry użytkownika (kod, uprawnienia, karty itp.) – postępuj zgodnie z instrukcjami na wyświetlaczu.
+4️⃣ Po zakończeniu naciśnij #, a następnie [1] aby zapisać.
+
+Jak usunąć użytkownika?
+1️⃣ Wprowadź kod administratora i naciśnij *.
+2️⃣ Wpisz kolejno [2] i [3] (Remove user).
+3️⃣ Wybierz użytkownika z listy (strzałki ▲/▼) i naciśnij #.
+4️⃣ Potwierdź usunięcie klawiszem [1].
+
+Jak dodać kartę zbliżeniową?
+1️⃣ W trakcie dodawania/edycji użytkownika wybierz funkcję New prox. card.
+2️⃣ Wybierz metodę dodawania (odczyt z czytnika lub ręczne wpisanie).
+3️⃣ Postępuj zgodnie z komunikatami na wyświetlaczu.
+
+3. Pomijanie stref (Zone bypass)
+Jak tymczasowo pominąć strefę (Inhibit)?
+1️⃣ Wprowadź kod i naciśnij *.
+2️⃣ Wpisz kolejno [4] i [1] (Zone bypasses → Inhibit).
+3️⃣ Na liście stref znajdź strefę do pominięcia (użyj strzałek ▲/▼ lub wpisz numer strefy po naciśnięciu 0).
+4️⃣ Naciśnij klawisz cyfrowy (1-9) tak długo, aż pojawi się symbol ■ (pominięta).
+5️⃣ Powtórz dla kolejnych stref.
+6️⃣ Naciśnij # aby zapisać.
+
+Jak trwale wyłączyć strefę (Isolate)?
+1️⃣ Postępuj jak wyżej, ale w kroku 2 wybierz [4][2] (Isolate).
+2️⃣ Strefa pozostanie pominięta do czasu ręcznego przywrócenia.
+
+Jak przywrócić strefę (unbypass)?
+W trybie Inhibit/Isolate wybierz strefę i naciskaj klawisz cyfrowy, aż pojawi się symbol ' (niepominięta). Naciśnij #.
+
+4. Przeglądanie zdarzeń i usterek
+Jak sprawdzić historię alarmów (wszystkie zdarzenia)?
+1️⃣ Wprowadź kod i naciśnij *.
+2️⃣ Wpisz kolejno [5][2] (Events → All events).
+3️⃣ Na wyświetlaczu pojawi się ostatnie zdarzenie. Użyj strzałki ▲ aby przeglądać starsze.
+
+Jak sprawdzić usterki systemu?
+1️⃣ Wprowadź kod i naciśnij *.
+2️⃣ Wpisz [7] (System state).
+3️⃣ Wyświetlą się informacje o usterkach (np. brak zasilania, uszkodzona bateria). Użyj strzałek do przeglądania.
+
+Jak ustawić czas i datę?
+1️⃣ Wprowadź kod i naciśnij *.
+2️⃣ Wpisz [6] (Set time).
+3️⃣ Wprowadź czas w formacie gg:mm:ss i datę w formacie dd:mm:rrrr.
+4️⃣ Naciśnij # aby zapisać.
+
+5. Testowanie systemu
+Jak przeprowadzić test czujek?
+1️⃣ Wprowadź kod i naciśnij *.
+2️⃣ Wejdź do menu Tests → Zones test → New.
+3️⃣ Wybierz typ testowanych stref (włamaniowe, pożarowe/techniczne, pojedyncza strefa).
+4️⃣ Wybierz partycje (opcjonalnie), ustaw czas testu (max 50 min).
+5️⃣ Potwierdź klawiszem #. Rozpocznie się test.
+6️⃣ Naruszaj czujki (otwieraj drzwi, przechodź przed czujkami).
+7️⃣ Po teście przejrzyj wyniki w menu Tests → Zones test → View results.
+
+Jak sterować wyjściami (np. oświetleniem)?
+1️⃣ Wprowadź kod i naciśnij *.
+2️⃣ Wpisz [8] (Outputs control).
+3️⃣ Wybierz wyjście z listy (strzałki ▲/▼).
+4️⃣ Zmień stan wyjścia – patrz instrukcje poniżej:
+
+Wyjście MONO SWITCH: gdy nieaktywne – naciśnij ▶ (aktywacja na czas zaprogramowany) lub # (programowanie czasu). Gdy aktywne – dowolny klawisz cyfrowy wyłącza.
+
+Wyjście BI SWITCH: naciśnij # lub ▶ aby przełączyć stan. Gdy aktywne – dowolny klawisz cyfrowy wyłącza.
+
+Wyjście REMOTE SWITCH: jak BI SWITCH, ale działanie zależy od konfiguracji.
+
+Rolety (SHUTTER UP/DOWN): użyj ▲ (podnieś) lub ▼ (opuść). Dowolny klawisz cyfrowy zatrzymuje.
+
+6. Inne przydatne funkcje
+Jak sprawdzić stan partycji?
+Przytrzymaj klawisz 4 przez 3 sekundy.
+
+Jak sprawdzić stan stref?
+Przytrzymaj klawisz 1 przez 3 sekundy.
+
+Jak włączyć/wyłączyć sygnalizację dźwiękową CHIME?
+Przytrzymaj klawisz 8 przez 3 sekundy.
+
+Jak przełączyć wyświetlacz między trybem czuwania a prezentacją partycji?
+Przytrzymaj klawisz 9 przez 3 sekundy.
+
+
+7. Komunikaty dźwiękowe (interpretacja)
+Dźwięk	Znaczenie
+1 krótki beep	Naciśnięcie klawisza, potwierdzenie wprowadzenia kodu
+2 krótkie beep	Potwierdzenie wykonania polecenia, wejście do menu
+3 krótkie beep	Rozpoczęcie uzbrajania, rozbrojenie, wyjście z funkcji z zapisem
+4 krótkie + 1 długi	Zakończenie funkcji, potwierdzenie zapisu
+1 długi beep	Odmowa uzbrojenia (otwarte strefy, usterka)
+2 długie beep	Nieprawidłowy kod/karta, brak uprawnień
+3 długie beep	Funkcja niedostępna
+5 krótkich beep	Naruszenie strefy (CHIME)
+Długi beep co 3s, potem seria krótkich	Odliczanie czasu wyjścia
+2 krótkie beep co sekundę	Odliczanie czasu wejścia
+Ciągły dźwięk	Alarm
+Długi beep co sekundę	Alarm pożarowy
+Powyższe instrukcje są zgodne z oryginalną dokumentacją Satel Integra i uwzględniają specyfikę klawiatury INT-KLCD. W razie wątpliwości zawsze można skontaktować się z instalatorem systemu.
+
