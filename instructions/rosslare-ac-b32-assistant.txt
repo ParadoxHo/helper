@@ -1,0 +1,216 @@
+ROSSLARE AC-B32 (STAND-ALONE) — INSTRUKCJE DLA ASYSTENTA (RAG)
+
+UWAGA:
+- Do wejścia w Programming Mode AC-B32 musi być w Normal Mode.
+- Domyślny Programming Code: 1234
+- Domyślny Open Code 1: 2580
+- Domyślny Open Code 2: 0852
+- Domyślny Normal / Secure Code: 3838
+- Jeśli Programming Code nie zostanie wprowadzony w ciągu 5 sekund — urządzenie wróci do Normal Mode.
+- W Programming Mode: jeśli przez 1 minutę nie naciśniesz żadnego klawisza — urządzenie wyjdzie z Programming Mode i wróci do Normal Mode.
+- Błędne wpisy mogą zresetować urządzenie do Normal Mode.
+
+========================================
+A) WEJŚCIE DO TRYBU PROGRAMOWANIA (PROGRAMMING MODE)
+========================================
+A1. Wejście (obowiązkowe na start każdej procedury)
+1️⃣ Wciśnij i przytrzymaj przycisk `#` przez 2 sekundy.
+   - Mode LED zgaśnie.
+   - Door LED zapali się na czerwono.
+2️⃣ Wprowadź 4-cyfrowy Programming Code.
+   - Fabrycznie: 1234
+3️⃣ Jeśli kod jest poprawny:
+   - Door LED zaświeci się na zielono.
+   - AC-B32 jest w Programming Mode.
+
+A2. Wyjście z trybu programowania (jeśli trzeba)
+1️⃣ W dowolnym momencie: wciśnij i przytrzymaj `#` przez 2 sekundy.
+2️⃣ Usłyszysz 3 krótkie sygnały.
+3️⃣ Door LED zgaśnie.
+4️⃣ Mode LED zapali się na zielono (Normal Mode).
+
+========================================
+B) OPIS MENU (każda procedura poniżej zaczyna się od A1)
+========================================
+
+B1) MENU 1 — ZMIANA OPEN CODE 1
+1️⃣ Wejście do Programming Mode (A1).
+2️⃣ Wybierz menu: wprowadź `1` (Changing Open Code 1).
+3️⃣ Wprowadź nowy 4-cyfrowy Open Code 1.
+4️⃣ Po poprawnym ustawieniu urządzenie wraca do Normal Mode:
+   - usłyszysz 3 krótkie sygnały
+   - Door LED zgaśnie
+   - Mode LED zapali się na zielono
+5️⃣ Uwagi:
+   - Open Code 1 nie działa w Secure Mode.
+   - Błędne wpisy zwracają urządzenie do Normal Mode.
+   - Kod `0000` usuwa/dezaktywuje Open Code 1.
+
+B2) MENU 2 — ZMIANA OPEN CODE 2
+1️⃣ Wejście do Programming Mode (A1).
+2️⃣ Wybierz menu: wprowadź `2` (Changing Open Code 2).
+3️⃣ Wprowadź nowy 4-cyfrowy Open Code 2.
+4️⃣ Po poprawnym ustawieniu urządzenie wraca do Normal Mode:
+   - usłyszysz 3 krótkie sygnały
+   - Door LED zgaśnie
+   - Mode LED zapali się na zielono
+5️⃣ Uwagi:
+   - Open Code 2 nie działa w Secure Mode.
+   - Błędne wpisy zwracają urządzenie do Normal Mode.
+   - Kod `0000` usuwa/dezaktywuje Open Code 2.
+
+B3) MENU 3 — ZMIANA PROGRAMMING CODE
+1️⃣ Wejście do Programming Mode (A1).
+2️⃣ Wybierz menu: wprowadź `3` (Changing the Programming Code).
+3️⃣ Wprowadź nowy 4-cyfrowy Programming Code.
+4️⃣ Po poprawnym ustawieniu:
+   - usłyszysz 3 krótkie sygnały
+   - Door LED zgaśnie
+   - Mode LED zapali się na zielono
+5️⃣ Uwagi:
+   - Programming Code nie może być ustawiany jako `0000` (w instrukcji: `0000` jest niepoprawny i nie usuwa kodu).
+
+B4) MENU 4 — ZMIANA NORMAL / SECURE CODE
+1️⃣ Wejście do Programming Mode (A1).
+2️⃣ Wybierz menu: wprowadź `4` (Changing the Normal / Secure Code).
+3️⃣ Wprowadź nowy 4-cyfrowy Normal / Secure Code.
+   - Domyślnie: 3838
+4️⃣ Po poprawnym ustawieniu:
+   - usłyszysz 3 krótkie sygnały
+   - Door LED zgaśnie
+   - Mode LED zapali się na zielono
+5️⃣ Uwagi:
+   - Błędne wpisy zwracają urządzenie do Normal Mode.
+
+B5) MENU 5 — NORMAL / BYPASS CODE + USTAWIENIA DOOR CHIME
+1️⃣ Wejście do Programming Mode (A1).
+2️⃣ Wybierz menu: wprowadź `5` (Normal / Bypass Code i Door Chime Settings).
+3️⃣ Mode LED będzie migać na pomarańczowo (w tym trybie ustawień).
+4️⃣ Wprowadź 4-cyfrowy kod i ustaw jednocześnie wariant Bypass + Door Chime:
+   - `0000`  → Bypass Code OFF (Disable) + Door Chime OFF (Disable)
+   - `0001`  → Bypass Code OFF (Disable) + Door Chime ON (Enable)
+   - dowolny kod 4-cyfrowy kończący się na `0` →
+     Bypass Code ON (Enable) + Door Chime OFF (Disable)
+   - dowolny kod 4-cyfrowy NIEWYCZNAJĄCY się na `0` →
+     Bypass Code ON (Enable) + Door Chime ON (Enable)
+5️⃣ Po poprawnym ustawieniu:
+   - usłyszysz 3 krótkie sygnały
+   - Door LED zgaśnie
+   - Mode LED zapali się na zielono
+
+B6) MENU 6 — FAIL SAFE / FAIL SECURE + TAMper siren time + LOCK STRIKE RELEASE TIME
+1️⃣ Wejście do Programming Mode (A1).
+2️⃣ Wybierz menu: wprowadź `6` (Fail Safe / Secure operation).
+3️⃣ Mode LED będzie migać na zielono (w tym trybie ustawień).
+4️⃣ Wprowadź 4-cyfrowy kod (konstrukcja cyfr):
+   - 1. cyfra:
+     `0` = Fail Secure
+     `1` = Fail Safe
+   - 2. cyfra:
+     Tamper Siren Time: `1` do `9` minut
+   - 3. i 4. cyfra:
+     Lock Strike Release Time: `01` do `99` sekund
+   - przykład: `0 5 1 2` → Fail Secure, 5 minut sirena, 12 sekund zwolnienia zamka
+5️⃣ Po poprawnym ustawieniu:
+   - usłyszysz 3 krótkie sygnały
+   - Door LED zgaśnie
+   - Mode LED zapali się na zielono
+
+B7) MENU 7 — ENROLLING (DODAWANIE) PRIMARY i SECONDARY CODE
+Najpierw zasady:
+- Primary Code:
+  - tylko do pustego User Slot
+  - musi być unikalny
+  - nie może być taki sam jak kody systemowe (Normal/Secure lub Open Codes)
+  - użytkownik z samym Primary Code ma dostęp tylko w Normal Mode
+- Secondary Code:
+  - tylko do slotu, który ma już Primary, ale nie ma Secondary
+  - nie musi być unikalny
+  - nie może być taki sam jak kody systemowe
+  - działa we wszystkich trybach
+- Są 2 metody: Standard i Code Search
+
+B7a) MENU 7 — STANDARD METHOD (znany numer slotu użytkownika)
+1️⃣ Wejście do Programming Mode (A1).
+2️⃣ Wybierz menu: wprowadź `7`.
+3️⃣ Door LED zapali się na pomarańczowo.
+4️⃣ Wprowadź 3-cyfrowy User Slot: od `001` do `500`.
+5️⃣ W zależności od stanu slotu:
+   - Mode LED miga na zielono → urządzenie czeka na Primary Code
+   - Mode LED miga na czerwono → urządzenie czeka na Secondary Code
+   - jeśli slot ma już oba kody → usłyszysz długi sygnał i wróci do Normal Mode
+6️⃣ Wprowadź wymagany kod:
+   - Primary/Secondary: wprowadź Proximity Card albo 4-cyfrowy PIN
+7️⃣ Jeśli kod przyjęty:
+   - Mode LED przestaje migać
+   - urządzenie czeka na kolejny 3-cyfrowy slot
+   - jeśli chcesz przejść dalej: naciśnij `#` (krótko) do następnego slotu
+   - jeśli kończysz: wciśnij i przytrzymaj `#` przez 2 sekundy (powrót do Normal Mode)
+
+B7b) MENU 7 — CODE SEARCH METHOD (dodajesz Secondary, gdy nie znasz numeru slotu)
+1️⃣ Wejście do Programming Mode (A1).
+2️⃣ Wybierz menu: wprowadź `7`.
+3️⃣ Door LED zapali się na pomarańczowo.
+4️⃣ Wprowadź User Slot `000`.
+   - Door LED zacznie migać na pomarańczowo
+5️⃣ Urządzenie czeka na Primary Code użytkownika:
+   - pokaż kartę zbliżeniową LUB wprowadź 4-cyfrowy PIN Primary
+6️⃣ Jeśli Primary Code poprawny:
+   - Mode LED miga na czerwono
+   - urządzenie czeka na Secondary Code
+7️⃣ Wprowadź Secondary Code:
+   - karta LUB 4-cyfrowy PIN Secondary
+   - jeśli poprawne: usłyszysz 3 krótkie sygnały i wróci do Normal Mode
+   - jeśli błędne: długi sygnał i czeka na poprawny Secondary
+
+B8) MENU 8 — DELETING (USUWANIE) PRIMARY i SECONDARY CODE
+B8a) MENU 8 — STANDARD METHOD (znany numer slotu użytkownika)
+1️⃣ Wejście do Programming Mode (A1).
+2️⃣ Wybierz menu: wprowadź `8`.
+3️⃣ Mode LED zapali się na czerwono.
+4️⃣ Wprowadź 3-cyfrowy User Slot, który chcesz usunąć.
+5️⃣ Mode LED zacznie migać na czerwono (czeka na Programming Code do potwierdzenia).
+   - jeśli slot pusty: usłyszysz długi sygnał i wróci do Normal Mode
+6️⃣ Wprowadź Programming Code (fabrycznie 1234, jeśli nie zmieniony).
+7️⃣ Jeśli poprawny:
+   - 3 krótkie sygnały
+   - powrót do Normal Mode
+   Jeśli błędny:
+   - długi sygnał
+   - powrót do Normal Mode (bez skutecznego kasowania)
+
+B8b) MENU 8 — CODE SEARCH METHOD (szukasz po Primary, gdy nie znasz slotu)
+1️⃣ Wejście do Programming Mode (A1).
+2️⃣ Wybierz menu: wprowadź `8`.
+3️⃣ Mode LED zapali się na czerwono.
+4️⃣ Wprowadź User Slot `000`.
+   - Door LED zacznie migać na pomarańczowo
+5️⃣ Urządzenie czeka na Primary Code użytkownika do usunięcia:
+   - pokaż kartę zbliżeniową LUB wprowadź 4-cyfrowy PIN Primary
+6️⃣ Mode LED miga na czerwono:
+   - w tym momencie wprowadź Programming Code do potwierdzenia usunięcia
+7️⃣ Jeśli poprawny:
+   - 3 krótkie sygnały i powrót do Normal Mode
+   Jeśli błędny:
+   - długi sygnał i powrót do Normal Mode
+
+B9) MENU 0 — RETURN TO FACTORY DEFAULT SETTINGS
+1️⃣ Wejście do Programming Mode (A1).
+2️⃣ Wybierz menu: wprowadź `0`.
+3️⃣ Mode LED będzie migać na czerwono, a Door LED także będzie migać na czerwono.
+4️⃣ Wprowadź 4-cyfrowy Programming Code.
+5️⃣ Jeśli poprawny:
+   - pamięć zostanie skasowana (wszyscy użytkownicy i kody systemowe do ustawień fabrycznych)
+   - usłyszysz 3 krótkie sygnały
+   - powrót do Normal Mode
+6️⃣ Jeśli błędny:
+   - długi sygnał
+   - powrót do Normal Mode bez kasowania pamięci
+
+========================================
+C) BRACĄCE/NIWIDOCZNE FRAGMENTY
+========================================
+W tym wyciągu z PDF nie mam czytelnych sekcji o “Replacing a lost Programming Code / Normal-Secure Code”
+(opisana była w spisie treści, ale tekst nie został wyciągnięty).
+Jeśli podeślesz te strony jako tekst lub inny PDF (z wyraźnym tekstem),
+dopiszę brakujące procedury w dokładnie tym samym formacie.
