@@ -1,0 +1,165 @@
+EVO640 (klawiatura LCD) — INSTRUKCJA DLA ASYSTENTA (RAG)
+ZAŁOŻENIE: w systemie ZAWSZE używana jest klawiatura EVO640.
+Wszelkie wzmianki o innych klawiaturach w tym dokumencie (np. EVO641R/DGP2-641RB, DGP2-648BL) traktuj jako “EVO640”, a różnice opisuj tylko ogólnie, jeśli w tekście są warunkowe.
+
+========================================
+1) NAZWA KLAWISZY (mapowanie dla EVO640)
+========================================
+[KOD DOSTĘPU]      = kod użytkownika (PIN)
+[ARM]              = uzbrojenie normalne (Regular)
+[STAY]             = uzbrojenie obwodowe (Stay)
+[FORCE]            = uzbrojenie wymuszone (Force)
+[DISARM]           = rozbrojenie partycji
+[BYP]              = pomijanie linii
+[ENTER]            = zapisz / zatwierdź i wyjście
+[CLEAR]            = wyjście bez zapisu
+[S] [T]            = przewijanie / nawigacja w menu (strzałki na ekranie)
+[MEM]              = pamięć / odczyt zdarzeń (i/lub funkcje znaków w polach tekstowych)
+[TRBL]             = usterki (Trouble)
+[ACC]              = funkcje kontroli dostępu (Access)
+[0]..[9]           = klawisze numeryczne
+
+Uwaga: jeśli wprowadzany kod ma różną długość i system tego wymaga, użytkownik musi potwierdzić klawiszem [ENTER] (tak wynika z dokumentu).
+
+========================================
+2) TRYB POUFNY (jeśli włączony)
+========================================
+W trybie poufnym stan systemu nie jest pokazywany na ekranie i diody nie świecą.
+Aby wrócić do trybu normalnego: wciśnij dowolny klawisz albo wprowadź kod dostępu użytkownika.
+
+========================================
+3) EKRAN STATUSU PARTYCJI
+========================================
+Jeśli użytkownik chce zobaczyć status partycji:
+1️⃣ Wprowadź [KOD DOSTĘPU] i wciśnij [1]
+2️⃣ Wciśnij klawisz odpowiadający żądanej partycji (np. 1..8) albo użyj [S] i [T], a potem [ENTER] gdy wyświetli się wybrana partycja
+3️⃣ Wciśnij [CLEAR], aby wyjść
+
+Status partycji na ekranie może zawierać m.in.:
+- “gotowy” / “niegotowy” (czy linie są zamknięte lub otwarte)
+- nazwy otwartych linii (jeśli są)
+- informacje o usterkach/alarmach i typie uzbrojenia.
+
+========================================
+4) UZBROJENIE (wybór trybu)
+========================================
+Dokument opisuje 5 podstawowych trybów uzbrojenia. W każdym trybie:
+- wymagane jest wprowadzenie [KOD DOSTĘPU]
+- następnie wybór trybu odpowiednim klawiszem
+- jeśli masz więcej niż jedną partycję, wybierasz partycję/partycje.
+
+4.1 Uzbrojenie normalne (Regular)
+1️⃣ Wprowadź [KOD DOSTĘPU]
+2️⃣ Wciśnij [ARM]
+3️⃣ Wybierz partycję(e), które mają być uzbrojone w trybie normalnym
+
+4.2 Uzbrojenie obwodowe (Stay)
+1️⃣ Wprowadź [KOD DOSTĘPU]
+2️⃣ Wciśnij [STAY]
+3️⃣ Wybierz partycję(e) do uzbrojenia w trybie obwodowym
+
+4.3 Uzbrojenie natychmiastowe (Instant)
+1️⃣ Wprowadź [KOD DOSTĘPU]
+2️⃣ Wciśnij [5]
+3️⃣ Wybierz partycję(e) do uzbrojenia w trybie natychmiastowym
+
+4.4 Uzbrojenie wymuszone (Force)
+1️⃣ Wprowadź [KOD DOSTĘPU]
+2️⃣ Wciśnij [FORCE]
+3️⃣ Wybierz partycję(e) do uzbrojenia w trybie wymuszonym
+
+4.5 Programowanie pomijania linii (BYP) — pomijanie przy uzbrojeniu
+1️⃣ Wprowadź [KOD DOSTĘPU]
+2️⃣ Wciśnij [BYP]
+3️⃣ Wprowadź numer linii (np. 01, 02, … 96) lub wybierz linię klawiszami [S] i [T], a potem zatwierdź pominięcie klawiszem [BYP] dla wyświetlanej linii
+4️⃣ Powtarzaj aż do pominięcia wszystkich żądanych linii
+5️⃣ Wciśnij [ENTER], aby zapisać ustawienia i zakończyć funkcję
+Ważne z dokumentu:
+- nie wszystkie linie można pomijać (np. linia pożarowa nie może być pominięta)
+- pomijanie zależy od tego, czy linia ma włączoną własność “pomijania”, a kod ma odpowiednie uprawnienia oraz czy partycja jest rozbrojona.
+
+========================================
+5) ROZBROJENIE SYSTEMU
+========================================
+Aby rozbroić system:
+1️⃣ Wprowadź [KOD DOSTĘPU]
+2️⃣ Wciśnij [DISARM]
+3️⃣ Jeśli masz dostęp do wielu partycji — wybierz partycję(e), które chcesz rozbroić
+
+Jeśli system jest w alarmie: dokument przewiduje zachowanie ostrożności i opisuje, że w zależności od typu alarmu są specyficzne działania (w razie alarmu włamaniowego opuszczenie obiektu i wezwanie służb).
+
+========================================
+6) EKRAN PAMIĘCI ALARMÓW
+========================================
+Aby wyświetlić listę alarmów zapisanych w pamięci:
+1️⃣ Wprowadź [KOD DOSTĘPU]
+2️⃣ Wciśnij [MEM]
+3️⃣ Jeśli masz dostęp do więcej niż jednej partycji — wybierz partycję(e) do podglądu
+4️⃣ Użyj [S] i [T] do przewijania zdarzeń
+5️⃣ Wciśnij [CLEAR], aby zakończyć
+
+========================================
+7) KODY DOSTĘPU — kluczowe informacje
+========================================
+- system pozwala zaprogramować wiele kodów dostępu (dokument podaje limit i zakres użytkowników)
+- kody użytkowników mogą mieć różną długość; jeśli system wymaga, trzeba potwierdzać [ENTER]
+- kod główny/master ma uprawnienia do zmian i zarządzania pozostałymi kodami (Master zależy od ustawień instalatora).
+
+7.1 Zmiana kodu głównego systemu (Master)
+Procedura w dokumencie (dla EVO640):
+1️⃣ Wprowadź [KOD DOSTĘPU] (fabrycznie: 123456, jeśli nie zmieniono)
+2️⃣ Wciśnij [0]
+3️⃣ Wciśnij [ACC]
+4️⃣ Wpisz numer sekwencji [0][0][1]
+5️⃣ Wprowadź [NOWY KOD]
+6️⃣ Wciśnij [ENTER], aby zapisać i zakończyć
+
+========================================
+8) OPCJE UŻYTKOWNIKA (Master / uprawnienia)
+========================================
+Dokument opisuje, że opcje użytkownika wpływają na to, co użytkownik może robić (np. funkcja Master, Przymus, Pomijanie, Tylko uzbrojenie, Stay/Instant, Force, dostęp do partycji).
+Jeśli użytkownik pyta “dlaczego nie mogę programować / uzbrajać / pomijać”, asystent ma odwołać się do tych opcji.
+
+========================================
+9) OPIS KONTROLI DOSTĘPU (WEJŚCIE PRZEZ DRZWI W EVO)
+========================================
+Dokument opisuje kilka sposobów wejścia (zawsze z perspektywy “zasilania” i uprawnień ustawionych przez instalatora):
+1) Karta dostępu (do czytnika / klawiatury)
+2) Wejście przez czujkę ruchu (żądanie wyjścia)
+3) Wprowadzenie kodu dostępu i wciśnięcie [ACC]
+4) Wejście wg terminarza odblokowania drzwi (może być otwieranie bez kodu w czasie terminarza)
+
+Asystent ma doprecyzować:
+- czy to “wejście przez drzwi kontroli dostępu”, czy “uzbrajanie/rozbrajanie systemu alarmowego”
+- czy użytkownik ma kartę czy tylko kod
+- czy dostęp jest ograniczony terminarzem (jeśli tak — asystent sugeruje sprawdzenie czasu/okna czasowego).
+
+========================================
+10) NAWIGACJA I USUWANIE USTERKI (TRBL)
+========================================
+Aby wyświetlić ekran usterek:
+1️⃣ Wciśnij [TRBL]
+2️⃣ Użyj [S] i [T], aby przewijać grupy usterek
+3️⃣ Wciśnij numer grupy usterek (np. 1..8) aby zobaczyć szczegóły
+4️⃣ Zalecenie z dokumentu: niezwłocznie powiadomić instalatora o usterce (po identyfikacji).
+
+========================================
+11) PGM / FUNKCJE DODATKOWE / ZMIANA USTAWIEŃ KLAWIATURY
+========================================
+Dokument opisuje, że użytkownik może modyfikować ustawienia klawiatury (podświetlenie/kontrast/czas i data, gongi linii, itd.) po wprowadzeniu kodu dostępu.
+Jeśli użytkownik pyta o “ustawienia klawiatury”:
+- asystent ma wymagać typu zmiany: podświetlenie, kontrast, data/czas, ustawienia gongu, itp.
+- asystent ma zaproponować kroki jako “zgodnie z odpowiednią sekcją instrukcji dla EVO640” i nie mieszać funkcji z innymi urządzeniami.
+
+========================================
+12) PROCEDURY, KTÓRYCH W TYM WYCIĄGU TEKSTU NIE DA SIĘ JUŻ PEWNI WIDOCZNIE PRZEPISAĆ 1:1
+========================================
+Sekcje w dokumencie dotyczące:
+- usunięcia kodu dostępu użytkownika,
+- pełnej procedury programowania kodu dostępu użytkownika (6.5.1),
+w treści PDF mogą być złożone (np. obraz/tabela) i w ekstrakcji tekstu nie zawsze są czytelne.
+Dla takich pytań asystent ma:
+1️⃣ podać “Brak kompletnej procedury w wyciągu — proszę podać z instrukcji numer kroku / sekcji albo dołączyć widoczny fragment (zdjęcie/tekst)”
+2️⃣ albo odpowiedzieć “Skontaktuj się z instalatorem/serwisem” gdy użytkownik nie dostarcza brakującej części.
+
+KONIEC — EVO640 assistant-pack
