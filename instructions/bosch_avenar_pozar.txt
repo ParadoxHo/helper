@@ -1,0 +1,27 @@
+Problem: Wyje syrena pożarowa / alarm pożarowy w systemie Bosch Avenar (II stopniowe alarmowanie).
+Rozwiązanie:
+1️⃣ Sprawdź wyświetlacz centrali – pokaże lokalizację czujki, która wywołała alarm (faza T1). Rozpoczyna się odliczanie czasu na potwierdzenie.
+
+2️⃣ Jeśli pożar można ugasić podręcznymi środkami gaśniczymi:
+   - Ugaś ogień.
+   - Naciśnij przycisk „RESET” na centrali.
+
+3️⃣ Jeśli nie możesz ugasić pożaru:
+   - Jeżeli instalacja jest podłączona do stacji monitoringu: naciśnij przycisk „Alarm Ręczny” lub ręczny ostrzegacz pożarowy (ROP) – spowoduje to natychmiastowe wywołanie alarmu II stopnia i powiadomienie straży pożarnej przez monitoring.
+   - Jeżeli instalacja nie jest podłączona do monitoringu: wezwij straż pożarną telefonicznie (numer w instrukcji).
+   - Jeżeli sieć telefoniczna jest uszkodzona: użyj telefonu komórkowego.
+
+4️⃣ W fazie T1 (czas na potwierdzenie):
+   - Aby potwierdzić i rozpocząć badanie (faza T2): dotknij pola „Potwierdzenie” na wyświetlaczu.
+   - Aby natychmiast wywołać alarm II stopnia (realne zagrożenie): dotknij pola „Alarm ręczny” lub naciśnij ROP.
+   - Jeśli nie potwierdzisz w wyznaczonym czasie, system automatycznie wywoła alarm II stopnia.
+
+5️⃣ W fazie T2 (czas na badanie alarmu):
+   - Udaj się w miejsce wskazane na wyświetlaczu, aby sprawdzić przyczynę.
+   - Jeśli alarm jest fałszywy: po pojawieniu się pola „Reset” (gdy napis „Reset możliwy za” zniknie) dotknij go, aby skasować zgłoszenie.
+   - Jeśli pożar jest realny: naciśnij najbliższy ROP lub dotknij pola „Alarm ręczny” – natychmiast wywoła to alarm II stopnia.
+   - Jeśli nie zresetujesz zgłoszenia przed upływem czasu T2, system automatycznie wywoła alarm II stopnia.
+
+6️⃣ Po ugaszeniu pożaru:
+   - Dokonaj wpisów w książce pracy.
+   - Powiadom firmę serwisującą (numer telefonu w instrukcji) w celu weryfikacji i naprawy urządzeń.
